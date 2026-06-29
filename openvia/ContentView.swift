@@ -41,6 +41,9 @@ struct ContentView: View {
                                 }) {
                                     Image(systemName: "trash")
                                         .foregroundColor(.red)
+                                        .scaledToFit()
+                                        .frame(width: 10, height: 10)
+                                    
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -54,10 +57,17 @@ struct ContentView: View {
                                     
                                 Picker("", selection: $rule.browserId) {
                                     ForEach(browserManager.installedBrowsers) { browser in
-                                        Text(browser.name).tag(browser.bundleId)
+                                        HStack(alignment: .center) {
+                                            if let icon = browser.icon {
+                                                Image(nsImage: icon)
+                                            }
+                                            Text(browser.name)
+                                        }
+                                        .tag(browser.bundleId)
                                     }
                                 }
-                                .frame(width: 150)
+                                .labelsHidden()
+                                .frame(width: 150, alignment: .leading)
                             }
                         }
                         .padding(.vertical, 4)
@@ -79,7 +89,12 @@ struct ContentView: View {
                     Picker("When no rule matches", selection: $router.fallback) {
                         Text("System Default").tag("")
                         ForEach(browserManager.installedBrowsers) { browser in
-                            Text(browser.name).tag(browser.bundleId)
+                            HStack {
+                                if let icon = browser.icon {
+                                    Image(nsImage: icon)
+                                }
+                                Text(browser.name)
+                            }.tag(browser.bundleId)
                         }
                     }
                 }
