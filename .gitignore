@@ -1,0 +1,77 @@
+# ==========================================
+# Xcode and Swift Artifacts
+# ==========================================
+# Derived data and build products
+build/
+DerivedData/
+*.o
+*.d
+*.framework
+*.xctest
+*.app
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# Xcode user settings and workspace state
+xcuserdata/
+*.xcuserdatad
+*.xcscmblueprint
+*.xccheckout
+.sandbox.log
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager (Uncomment Packages/ if you want to skip caching dependency source code)
+.build/
+# Packages/
+# Package.pins
+# Package.resolved
+
+# ==========================================
+# macOS System Files
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotbackup
+
+# Directories created on remote AFP/SMB shares
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ==========================================
+# Dependency Managers (Optional)
+# ==========================================
+# CocoaPods (Keep Pods/ if you prefer to check in your dependencies)
+Pods/
+Makefile.pods
+
+# Carthage
+Carthage/Build/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+# Ignore configuration files containing private API keys or certificates
+*.xcconfig
+.env
+
