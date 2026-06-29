@@ -1,0 +1,155 @@
+import SwiftUI
+
+struct RulesView: View {
+    @StateObject private var router = Router.shared
+    @StateObject private var browserManager = BrowserManager.shared
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            if !browserManager.isDefaultBrowser {
+                HStack {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.yellow)
+                    Text("OpenVia is not your default browser. It must be set as default to intercept links.")
+                        .font(.subheadline)
+                    Spacer()
+                    Button("Set Default") {
+                        let url = URL(string: "x-apple.systempreferences:com.apple.preference.general")!
+                        NSWorkspace.shared.open(url)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                }
+                .padding()
+                .background(Color.yellow.opacity(0.15))
+            }
+            
+            List {
+                Section(header: Text("Routing Rules").font(.headline).foregroundColor(.secondary)) {
+                    ForEach($router.rules) { $rule in
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Picker("", selection: $rule.scheme) {
+                                    ForEach(Rule.URLSchemeMatch.allCases, id: \.self) { scheme in
+                                        Text(scheme.rawValue).tag(scheme)
+                                    }
+                                }
+                                .labelsHidden()
+                                .frame(width: 110)
+                                
+                                Picker("", selection: $rule.patternType) {
+                                    ForEach(Rule.PatternType.allCases, id: \.self) { type in
+                                        Text(type.rawValue).tag(type)
+                                    }
+                                }
+                                .labelsHidden()
+                                .frame(width: 140)
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    if let index = router.rules.firstIndex(where: { $0.id == rule.id }) {
+                                        _ = withAnimation {
+                                            router.rules.remove(at: index)
+                                        }
+                                    }
+                                }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                        .frame(width: 14, height: 14)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            
+                            HStack {
+                                TextField("Pattern (e.g. *.company.com)", text: $rule.pattern)
+                                    .textFieldStyle(.roundedBorder)
+                                
+                                Image(systemName: "arrow.right")
+                                    .foregroundColor(.secondary)
+                                    
+                                Picker("", selection: $rule.browserId) {
+                                    ForEach(browserManager.installedBrowsers) { browser in
+                                        HStack(alignment: .center) {
+                                            if let icon = browser.icon {
+                                                Image(nsImage: icon)
+                                            }
+                                            Text(browser.name)
+                                        }
+                                        .tag(browser.bundleId)
+                                    }
+                                }
+                                .labelsHidden()
+                                .frame(width: 150, alignment: .leading)
+                            }
+                        }
+                        .padding()
+                        .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+                        .background(.regularMaterial)
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                        )
+                    }
+                    .onMove { source, destination in
+                        router.rules.move(fromOffsets: source, toOffset: destination)
+                    }
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    
+                    Button(action: {
+                        withAnimation {
+                            let defaultId = browserManager.defaultBrowser?.bundleId ?? "com.apple.Safari"
+                            let newRule = Rule(pattern: "", browserId: defaultId)
+                            router.rules.append(newRule)
+                        }
+                    }) {
+                        Label("Add Rule", systemImage: "plus.circle.fill")
+                            .font(.headline)
+                            .foregroundColor(.blue)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.vertical, 8)
+                    .listRowBackground(Color.clear)
+                }
+                
+                Section(header: Text("Fallback Behavior").font(.headline).foregroundColor(.secondary)) {
+                    HStack {
+                        Text("When no rule matches:")
+                        Spacer()
+                        Picker("", selection: $router.fallback) {
+                            Text("System Default").tag("")
+                            ForEach(browserManager.installedBrowsers) { browser in
+                                HStack {
+                                    if let icon = browser.icon {
+                                        Image(nsImage: icon)
+                                    }
+                                    Text(browser.name)
+                                }.tag(browser.bundleId)
+                            }
+                        }
+                        .labelsHidden()
+                        .frame(width: 180)
+                    }
+                    .padding()
+                    .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+                    .background(.regularMaterial)
+                    .cornerRadius(10)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                    )
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+            }
+            .scrollContentBackground(.hidden)
+            
+            Divider()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            browserManager.refreshBrowsers()
+        }
+    }
+}
