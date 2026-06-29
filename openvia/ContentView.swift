@@ -135,7 +135,7 @@ struct RulesView: View {
                     .listRowBackground(Color.clear)
                     
                     Button(action: {
-                        _ = withAnimation {
+                        withAnimation {
                             let defaultId = browserManager.defaultBrowser?.bundleId ?? "com.apple.Safari"
                             let newRule = Rule(pattern: "", browserId: defaultId)
                             router.rules.append(newRule)
@@ -229,9 +229,15 @@ struct AboutView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                Link("View on GitHub", destination: URL(string: "https://github.com/hyfic/openvia")!)
-                    .font(.callout)
-                    .foregroundColor(.blue)
+                HStack (spacing: 8) {
+                    Link("Visit Website", destination: URL(string: "https://openvia.hyfic.org")!)
+                        .font(.callout)
+                        .foregroundColor(.blue)
+                    
+                    Link("View on GitHub", destination: URL(string: "https://github.com/hyfic/openvia")!)
+                        .font(.callout)
+                        .foregroundColor(.blue)
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
