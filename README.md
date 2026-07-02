@@ -10,22 +10,18 @@ OpenVia is a lightweight macOS utility that automatically opens links in the bro
 - Support for any browser installed on macOS
 - Create custom rules for websites and URL patterns
 - Default browser fallback when no rule matches
-- Native, fast, and lightweight
-- Menu bar access
-- Set as your default browser to intercept every link
 - Privacy-first — all rules stay on your Mac
--  Designed for a clean macOS experience
 
 ## Example Rules
 
-| Pattern       | Browser         |
-| ------------- | --------------- |
-| twitter.com   | Arc             |
-| x.com         | Arc             |
-| github.com    | Safari          |
-| notion.so     | Chrome          |
-| *.company.com | Edge            |
-| *             | Default Browser |
+| Pattern        | Browser         |
+| -------------- | --------------- |
+| twitter.com    | Arc             |
+| x.com          | Arc             |
+| github.com     | Safari          |
+| notion.so      | Chrome          |
+| \*.company.com | Edge            |
+| \*             | Default Browser |
 
 ## How it Works
 
@@ -40,4 +36,3 @@ No extra clicks. No copy-pasting URLs.
 ## License
 
 MIT
-
